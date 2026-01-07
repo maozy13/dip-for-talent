@@ -1,0 +1,105 @@
+@import url("https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Noto+Sans+SC:wght@400;500;700&display=swap");
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  font-family: "Space Grotesk", "Noto Sans SC", sans-serif;
+  color: #0b1120;
+  background-color: #020617;
+}
+
+body {
+  min-height: 100vh;
+}
+
+.app-shell {
+  background:
+    radial-gradient(800px 400px at 10% 10%, rgba(14, 165, 164, 0.35), transparent 60%),
+    radial-gradient(600px 300px at 80% 20%, rgba(245, 158, 11, 0.35), transparent 60%),
+    linear-gradient(140deg, #0f172a 0%, #020617 45%, #111827 100%);
+  color: #e2e8f0;
+}
+
+.glass-card {
+  backdrop-filter: blur(16px);
+  background: rgba(15, 23, 42, 0.7);
+  border: 1px solid rgba(148, 163, 184, 0.2);
+}
+
+.glass-card .ant-card-head {
+  border-bottom: 1px solid rgba(148, 163, 184, 0.2);
+}
+
+.glass-card .ant-card-head-title,
+.glass-card .ant-card-extra {
+  color: #e2e8f0;
+}
+
+.glass-card .ant-table {
+  background: transparent;
+  color: #e2e8f0;
+}
+
+.glass-card .ant-table-thead > tr > th {
+  background: rgba(15, 23, 42, 0.6);
+  color: #cbd5f5;
+  border-bottom: 1px solid rgba(148, 163, 184, 0.2);
+}
+
+.glass-card .ant-table-tbody > tr > td {
+  background: rgba(15, 23, 42, 0.35);
+  border-bottom: 1px solid rgba(148, 163, 184, 0.15);
+}
+
+.glass-card .ant-empty-description {
+  color: #94a3b8;
+}
+
+.tag-chip {
+  border-radius: 999px;
+  border: 1px solid rgba(148, 163, 184, 0.4);
+  background: rgba(148, 163, 184, 0.15);
+}
+
+.fade-in {
+  animation: fadeIn 0.8s ease forwards;
+}
+
+.stagger > * {
+  animation: rise 0.6s ease forwards;
+  opacity: 0;
+}
+
+.stagger > *:nth-child(1) {
+  animation-delay: 0.1s;
+}
+
+.stagger > *:nth-child(2) {
+  animation-delay: 0.2s;
+}
+
+.stagger > *:nth-child(3) {
+  animation-delay: 0.3s;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
