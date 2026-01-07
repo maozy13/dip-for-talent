@@ -38,15 +38,6 @@ components:
         status:
           description: 状态码
           type: number
-      x-examples:
-        example-1:
-          error:
-            root_cause: []
-            type: x_content_parse_exception
-            reason: '[1:438] [bool] failed to parse field [must]'
-            failed_shareds: []
-            caused_by: {}
-          status: 400
     promqlErrorCode:
       title: Root Type for promqlErrorCode
       description: promql 错误信息返回格式
@@ -59,19 +50,12 @@ components:
         status:
           description: 状态
           type: string
-          example: error
         errorType:
           description: 错误类型
           type: string
-          example: timeout
         error:
           description: 错误体
           type: string
-          example: query timed out in expression evaluation
-      example:
-        status: error
-        errorType: timeout
-        error: query timed out in expression evaluation
     UniqueryErrorCode:
       description: ''
       required:
@@ -97,12 +81,6 @@ components:
         solution:
           description: 处理建议
           type: string
-      example:
-        description: some text
-        error_code: some text
-        error_detail: some text
-        error_link: some text
-        solution: some text
     SpanDetail:
       description: span原始数据
       required:
@@ -259,12 +237,6 @@ components:
         solution:
           description: 处理建议
           type: string
-      example:
-        description: some text
-        error_code: some text
-        error_detail: some text
-        error_link: some text
-        solution: some text
     Filter:
       description: 过滤条件
       required:
@@ -321,72 +293,6 @@ components:
         is_variable:
           description: dsl 原子指标的指标模型中的计算公式是否使用了变量。默认是 false
           type: string
-      example:
-        model:
-          id: 71
-          name: some text
-          measure_name: some text
-          metric_type: atomic
-          data_view_id: some text
-          data_view_name: some text
-          query_type: dsl
-          formula: some text
-          date_field: some text
-          date_format: epoch_millis
-          measure_field: some text
-          unit_type: percent
-          unit: KB
-          tags:
-          - some text
-          - some text
-          custom_attribute: {}
-          comment: some text
-          update_time: some text
-          group_id: 91
-          group_name: some text
-          is_calendar_interval: 38
-          task:
-            id: 69
-            type: fixed
-            name: some text
-            model_id: 60
-            schedule:
-              type: FIX_RATE
-              expression: some text
-            time_windows:
-            - some text
-            - some text
-            steps:
-            - some text
-            - some text
-            plan_times:
-            - 91
-            - 13
-            index_base_name: some text
-            index_base: some text
-            retrace_duration: some text
-            comment: some text
-            task_schedule_id: 22
-            schedule_status: 39
-            schedule_sync_status: 93
-            execute_status: 36
-            update_time: some text
-            measure_name: some text
-        datas:
-        - times:
-          - {}
-          - {}
-          values:
-          - 36.4
-          - 87.75
-        - times:
-          - {}
-          - {}
-          values:
-          - 6.66
-          - 81.74
-        step: some text
-        is_variable: some text
     MetricResultsSimulate:
       description: 基于指标模型的指标查询结果
       required:
@@ -407,39 +313,6 @@ components:
         is_variable:
           description: dsl 原子指标的指标模型中的计算公式是否使用了变量。默认是 false
           type: string
-      example:
-        model:
-          name: some text
-          metric_type: complex
-          data_view_name: some text
-          query_type: promql
-          formula: some text
-          date_field: some text
-          date_format: epoch_second
-          metric_field: some text
-          unit_type: timeUnit
-          unit: bit
-          group_id: 1111
-          group_name: 系统CPU监控
-        datas:
-        - labels:
-            cpu: '1'
-            instance: 10.4.68.120:9101
-          times:
-          - 1669789800
-          - 1669789900
-          values:
-          - 10
-          - 11
-        - labels:
-            cpu: '2'
-            instance: 10.4.68.120:9101
-          times:
-          - 1669789800
-          - 1669789900
-          values:
-          - 10
-          - 11
     MetricModelSimulate:
       description: 指标模型信息
       required:
@@ -528,15 +401,6 @@ components:
         measure_field:
           description: 度量字段。当查询语言是 promql 时，此字段值为 value。
           type: string
-      example:
-        name: some text
-        data_view_name: some text
-        formula: some text
-        date_field: some text
-        date_format: epoch_second
-        metric_field: some text
-        unit_type: storeUnit
-        unit: bit
     Task:
       description: 持久化任务
       required:
@@ -964,15 +828,6 @@ components:
         task:
           $ref: '#/components/schemas/Task'
           description: 持久化任务
-      example:
-        name: some text
-        data_view_name: some text
-        formula: some text
-        date_field: some text
-        date_format: epoch_second
-        metric_field: some text
-        unit_type: storeUnit
-        unit: bit
     MetricData:
       description: 指标数据计算结果
       required:
@@ -1128,12 +983,6 @@ components:
         is_model_request:
           description: 是否来自模型的请求
           type: boolean
-      example:
-        method: GET
-        metric_type: 原子指标
-        data_view_id: qwrerer56567787
-        query_type: promql
-        formula: avg(irate(node_cpu_seconds_total{name=~"node-14-35",mode="system"}[5m]))by(name)
     ReqMetricModelForGroup:
       description: 基于指标模型的指标数据查询请求体
       required:
@@ -1232,26 +1081,10 @@ components:
         application/json:
           schema:
             $ref: '#/components/schemas/Error'
-          examples:
-            exp:
-              value:
-                description: Invalid Parameter
-                error_code: DataModel.MetricModel.InvalidParameter
-                error_detail: some text
-                error_link: some text
-                solution: some text
       description: 参数错误
     500InternalError:
       content:
         application/json:
           schema:
             $ref: '#/components/schemas/Error'
-          examples:
-            exp:
-              value:
-                description: internel server error
-                error_code: DataModel.MetricModel.InternalError
-                error_detail: some text
-                error_link: some text
-                solution: some text
       description: 内部错误

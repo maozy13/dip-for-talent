@@ -1,22 +1,20 @@
+from __future__ import annotations
+
 import logging
 import os
-from typing import Any, Dict
+from typing import Optional
 
 import httpx
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, Request, Response
 from fastapi.middleware.cors import CORSMiddleware
 
-API_BASE = os.getenv("DIP_API_BASE", "https://dip.aishu.cn/api")
-API_AUTH = os.getenv(
-    "DIP_API_AUTH",
-    "Bearer ory_at_WaCDXOIxHGVfgbgWY65v8mRGOQpqQEaJ8TcmuLlXQIE.vYPuMbf4tTV4g_-KBCkUejHRiJs16roATBYr40RmHlE",
-)
-KN_ID = os.getenv("DIP_KN_ID", "d4rok5r5s3q8va76m88g")
-OT_ID = os.getenv("DIP_OT_ID", "d4rsbjb5s3q8va76m8cg")
+app = FastAPI(title="DIP for Talent API", version="0.1.0")
 
-app = FastAPI(title="Object Type Detail API")
-logger = logging.getLogger("object_type_detail")
-logging.basicConfig(level=logging.INFO)
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s %(levelname)s %(name)s %(message)s",
+)
+logger = logging.getLogger("dip-for-talent")
 
 app.add_middleware(
     CORSMiddleware,
@@ -26,48 +24,45 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+API_BASE_URL = os.getenv("DIP_API_BASE_URL", "https://dip.aishu.cn/api")
+API_AUTHORIZATION = os.getenv(
+    "DIP_API_AUTHORIZATION",
+    "Bearer ory_at_fd1JrCxJA7iszQxE4OFGifJB7Q_twCgbFT4nU7-TKNw.4lMhof_OrKZcftwjMvD69vGXduSfthWD9-ZZznNIJHo",
+)
 
-@app.get("/api/object-type-detail")
-async def get_object_type_detail() -> Dict[str, Any]:
-    url = f"{API_BASE}/ontology-query/v1/knowledge-networks/{KN_ID}/object-types/{OT_ID}"
-    headers = {
-        "Authorization": API_AUTH,
-        "Content-Type": "application/json",
-        "X-HTTP-Method-Override": "GET",
-    }
-    params = {
-        "include_type_info": "true",
-        "include_logic_params": "true",
-    }
-    payload = {
-        "limit": 1,
-        "need_total": False,
-    }
-    logger.info(
-        "Requesting object type detail",
-        extra={
-            "url": url,
-            "params": params,
-            "headers": {"Authorization": "Bearer ***", "Content-Type": "application/json", "X-HTTP-Method-Override": "GET"},
-            "payload": payload,
-        },
-    )
 
-    async with httpx.AsyncClient(timeout=20) as client:
-        try:
-            response = await client.post(url, headers=headers, params=params, json=payload)
-        except httpx.HTTPError as exc:
-            raise HTTPException(status_code=502, detail=f"Upstream request failed: {exc}") from exc
+@app.get("/api/health")
+async def health_check() -> dict[str, str]:
+    return {"status": "ok"}
 
-    if response.status_code != 200:
-        raise HTTPException(
-            status_code=response.status_code,
-            detail={"message": "Upstream error", "body": response.text},
+
+@app.api_route(
+    "/api/{full_path:path}",
+    methods=["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
+)
+async def proxy_request(full_path: str, request: Request) -> Response:
+    url = f"{API_BASE_URL.rstrip('/')}/{full_path.lstrip('/')}"
+    headers = dict(request.headers)
+    headers.pop("host", None)
+    headers.pop("content-length", None)
+    if "authorization" not in {key.lower() for key in headers}:
+        headers["Authorization"] = API_AUTHORIZATION
+    body = await request.body()
+
+    logger.info("Proxy request %s %s", request.method, url)
+
+    async with httpx.AsyncClient(timeout=60) as client:
+        upstream = await client.request(
+            request.method,
+            url,
+            params=request.query_params,
+            content=body,
+            headers=headers,
         )
 
-    data = response.json()
-    return {
-        "object_type": data.get("object_type"),
-        "datas": data.get("datas", []),
-        "total_count": data.get("total_count"),
-    }
+    media_type: Optional[str] = upstream.headers.get("content-type")
+    return Response(
+        content=upstream.content,
+        status_code=upstream.status_code,
+        media_type=media_type,
+    )
