@@ -11,7 +11,7 @@ export default defineConfig({
       useDevMode: true
     })
   ],
-  base: "./",
+  base: "/dip-for-talent/",
   server: {
     port: 8081,
     cors: true,
