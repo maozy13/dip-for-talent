@@ -1,19 +1,17 @@
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
+import qiankun from "vite-plugin-qiankun";
 
 const packageName = "dip-for-talent";
 
 export default defineConfig({
-  plugins: [react()],
+  plugins: [
+    react(),
+    qiankun(packageName, {
+      useDevMode: true
+    })
+  ],
   base: "./",
-  build: {
-    rollupOptions: {
-      output: {
-        format: "umd",
-        name: packageName
-      }
-    }
-  },
   server: {
     port: 8081,
     cors: true,
@@ -31,3 +29,4 @@ export default defineConfig({
     }
   }
 });
+

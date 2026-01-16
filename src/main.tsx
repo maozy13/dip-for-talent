@@ -1,6 +1,7 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
 import { ConfigProvider } from "antd";
+import { renderWithQiankun, qiankunWindow } from "vite-plugin-qiankun/dist/helper";
 import App from "./App";
 import type { MicroAppProps } from "./micro-app";
 import "antd/dist/reset.css";
@@ -49,23 +50,27 @@ const render = (props?: MicroAppProps) => {
   );
 };
 
-if (!(window as any).__POWERED_BY_QIANKUN__) {
+renderWithQiankun({
+  mount(props) {
+    console.log("[微应用] mount", props);
+    render(props);
+  },
+  bootstrap() {
+    console.log("[微应用] bootstrap");
+  },
+  unmount(props: any) {
+    console.log("[微应用] unmount");
+    if (root) {
+      root.unmount();
+      root = null;
+    }
+  },
+  update(props: any) {
+    console.log("[微应用] update", props);
+  }
+});
+
+if (!qiankunWindow.__POWERED_BY_QIANKUN__) {
   render();
 }
 
-export async function bootstrap() {
-  console.log("[微应用] bootstrap");
-}
-
-export async function mount(props: MicroAppProps) {
-  console.log("[微应用] mount", props);
-  render(props);
-}
-
-export async function unmount() {
-  console.log("[微应用] unmount");
-  if (root) {
-    root.unmount();
-    root = null;
-  }
-}
