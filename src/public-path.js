@@ -1,5 +1,3 @@
-
-
 // src/public-path.js
 if (window.__POWERED_BY_QIANKUN__) {
   // eslint-disable-next-line no-undef

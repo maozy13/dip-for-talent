@@ -1,7 +1,6 @@
 .venv/
-.dip-cache/
+.build-cache/
 node_modules/
-devkit/
 dist/
 
 .DS_Store
